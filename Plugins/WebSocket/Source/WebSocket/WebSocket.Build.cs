@@ -35,6 +35,7 @@ public class WebSocket : ModuleRules
 				"Core",
                 "Json",
                 "JsonUtilities",
+                "Sockets",
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -121,7 +122,11 @@ public class WebSocket : ModuleRules
         else if(Target.Platform == UnrealTargetPlatform.IOS)
         {
             PrivateIncludePaths.Add("WebSocket/ThirdParty/include/IOS");
-            string strStaticPath = Path.GetFullPath(Path.Combine(ModulePath, "ThirdParty/lib/IOS/"));
+
+            string PluginPath = Utils.MakePathRelativeTo(ModuleDirectory, Target.RelativeEnginePath + "/Source/");
+            PluginPath = PluginPath.Replace("\\", "/");
+
+            string strStaticPath = PluginPath + "/ThirdParty/lib/IOS/";// Path.GetFullPath(Path.Combine(ModulePath, "ThirdParty/lib/IOS/"));
             PublicLibraryPaths.Add(strStaticPath);
 
             string[] StaticLibrariesIOS = new string[] {
