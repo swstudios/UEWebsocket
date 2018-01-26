@@ -23,7 +23,12 @@
 
 #include "UObject/NoExportTypes.h"
 #include "Tickable.h"
+
+#if PLATFORM_UWP
+#else
 #include "libwebsockets.h"
+#endif
+
 #include "WebSocketContext.generated.h"
 
 
@@ -49,9 +54,15 @@ public:
 
 	UWebSocketBase* Connect(const FString& uri);
 	UWebSocketBase* Connect(const FString& uri, const TMap<FString, FString>& header);
-
+#if PLATFORM_UWP
+#else
 	static int callback_echo(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len);
+#endif
 	
 private:
+
+#if PLATFORM_UWP
+#else
 	struct lws_context* mlwsContext;
+#endif
 };

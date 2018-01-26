@@ -24,6 +24,8 @@
 #include "WebSocketBlueprintLibrary.h"
 #include "Runtime/Launch/Resources/Version.h"
 
+
+
 TSharedPtr<UWebSocketContext> s_websocketCtx;
 
 static bool GetTextFromObject(const TSharedRef<FJsonObject>& Obj, FText& TextOut)
@@ -55,6 +57,7 @@ FString UWebSocketBlueprintLibrary::StandardizeCase(const FString &StringIn)
 	FixedString.ReplaceInline(TEXT("ID"), TEXT("Id"), ESearchCase::CaseSensitive); // Id is standard instead of ID, some of our fnames use ID
 	return FixedString;
 }
+
 
 UWebSocketBase* UWebSocketBlueprintLibrary::Connect(const FString& url)
 {

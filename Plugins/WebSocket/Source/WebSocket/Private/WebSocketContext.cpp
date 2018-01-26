@@ -19,6 +19,7 @@
 *  MA  02110-1301  USA
 */
 
+
 #include "WebSocket.h"
 #include "WebSocketContext.h"
 #include "UObjectGlobals.h"
@@ -29,6 +30,8 @@
 
 extern TSharedPtr<UWebSocketContext> s_websocketCtx;
 
+#if PLATFORM_UWP
+#else
 static struct lws_protocols protocols[] = {
 	/* first protocol must always be HTTP handler */
 
@@ -56,6 +59,7 @@ static const struct lws_extension exts[] = {
 	},
 	{ NULL, NULL, NULL /* terminator */ }
 };
+#endif
 
 void UWebSocketContext::BeginDestroy()
 {
@@ -63,6 +67,8 @@ void UWebSocketContext::BeginDestroy()
 	s_websocketCtx.Reset();
 }
 
+#if PLATFORM_UWP
+#else
 int UWebSocketContext::callback_echo(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
 {
 	void* pUser = lws_wsi_user(wsi);
@@ -119,14 +125,20 @@ int UWebSocketContext::callback_echo(struct lws *wsi, enum lws_callback_reasons 
 
 	return 0;
 }
+#endif
 
 UWebSocketContext::UWebSocketContext()
 {
+#if PLATFORM_UWP
+#else
 	mlwsContext = nullptr;
+#endif
 }
 
 void UWebSocketContext::CreateCtx()
 {
+#if PLATFORM_UWP
+#else
 	struct lws_context_creation_info info;
 	memset(&info, 0, sizeof info);
 
@@ -146,15 +158,19 @@ void UWebSocketContext::CreateCtx()
 	{
 		//UE_LOG(WebSocket, Error, TEXT("libwebsocket Init fail"));
 	}
+#endif
 }
 
 void UWebSocketContext::Tick(float DeltaTime)
 {
+#if PLATFORM_UWP
+#else
 	if (mlwsContext != nullptr)
 	{
 		lws_callback_on_writable_all_protocol(mlwsContext, &protocols[0]);
 		lws_service(mlwsContext, 0);
 	}
+#endif
 }
 
 bool UWebSocketContext::IsTickable() const
@@ -169,13 +185,20 @@ TStatId UWebSocketContext::GetStatId() const
 
 UWebSocketBase* UWebSocketContext::Connect(const FString& uri, const TMap<FString, FString>& header)
 {
+#if PLATFORM_UWP
+#else
 	if (mlwsContext == nullptr)
 	{
 		return nullptr;
 	}
+#endif
 
 	UWebSocketBase* pNewSocketBase = NewObject<UWebSocketBase>();
+
+#if PLATFORM_UWP
+#else
 	pNewSocketBase->mlwsContext = mlwsContext;
+#endif
 
 	pNewSocketBase->Connect(uri, header);
 
@@ -186,4 +209,3 @@ UWebSocketBase* UWebSocketContext::Connect(const FString& uri)
 {
 	return Connect(uri, TMap<FString, FString>() );
 }
-

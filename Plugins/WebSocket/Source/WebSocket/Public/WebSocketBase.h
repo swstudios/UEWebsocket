@@ -34,8 +34,32 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FWebSocketClosed);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FWebSocketConnected);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FWebSocketRecieve, const FString&, data);
 
+
+#if PLATFORM_UWP
+#include <collection.h>
+#include <ppltasks.h>
+
+class UWebSocketBase;
+
+ref class FUWPSocketHelper sealed
+{
+public:
+	FUWPSocketHelper();
+	virtual ~FUWPSocketHelper();
+
+	void MessageReceived(Windows::Networking::Sockets::MessageWebSocket^ sender, Windows::Networking::Sockets::MessageWebSocketMessageReceivedEventArgs^ args);
+	void OnUWPClosed(Windows::Networking::Sockets::IWebSocket^ sender, Windows::Networking::Sockets::WebSocketClosedEventArgs^ args);
+	void SetParent(int64 p);
+
+private:
+	int64 Parent;
+};
+
+
+#else
 struct lws_context;
 struct lws;
+#endif
 
 /**
  * 
@@ -58,6 +82,13 @@ public:
 
 	void Connect(const FString& uri, const TMap<FString, FString>& header);
 
+#if PLATFORM_UWP
+	Concurrency::task<void> ConnectAsync(Platform::String^ uriString);
+	void MessageReceived(Windows::Networking::Sockets::MessageWebSocket^ sender, Windows::Networking::Sockets::MessageWebSocketMessageReceivedEventArgs^ args);
+	void OnUWPClosed(Windows::Networking::Sockets::IWebSocket^ sender, Windows::Networking::Sockets::WebSocketClosedEventArgs^ args);
+	Concurrency::task<void> SendAsync(Platform::String^ message);
+#endif
+
 	UPROPERTY(BlueprintAssignable, Category = WebSocket)
 	FWebSocketConnectError OnConnectError;
 
@@ -75,8 +106,15 @@ public:
 	void ProcessRead(const char* in, int len);
 	bool ProcessHeader(unsigned char** p, unsigned char* end);
 
+#if PLATFORM_UWP
+	Windows::Networking::Sockets::MessageWebSocket^ messageWebSocket;
+	Windows::Storage::Streams::DataWriter^ messageWriter;
+	FUWPSocketHelper^ uwpSocketHelper;
+#else
 	struct lws_context* mlwsContext;
 	struct lws* mlws;
+#endif
+	
 	TArray<FString> mSendQueue;
 	TMap<FString, FString> mHeaderMap;
 };
