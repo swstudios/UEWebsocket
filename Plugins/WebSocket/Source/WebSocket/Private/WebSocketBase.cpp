@@ -98,8 +98,8 @@ void FHtml5SocketHelper::Tick(float DeltaTime)
 	}
 
 	// check connect
-	char szError[64] = { 0 };
-	int checkError = SocketError(mHostWebSocket->mWebSocketRef, szError, (int)sizeof(szError));
+	char szError[128] = { 0 };
+	int checkError = SocketError(mHostWebSocket->mWebSocketRef, szError, (int)sizeof(szError) - 1);
 	if ( (checkError == 0) && !mHostWebSocket->mConnectSuccess && SocketState(mHostWebSocket->mWebSocketRef) )
 	{
 		mHostWebSocket->mConnectSuccess = true;
@@ -127,9 +127,11 @@ void FHtml5SocketHelper::Tick(float DeltaTime)
 	int iRecvLen = SocketRecvLength(mHostWebSocket->mWebSocketRef);
 	if (iRecvLen > 0)
 	{
-		char* pData = new char[iRecvLen];
+		char* pData = new char[iRecvLen + 1];
 		SocketRecv(mHostWebSocket->mWebSocketRef, pData, iRecvLen);
+		pData[iRecvLen] = (char)0;
 		mHostWebSocket->ProcessRead((const char*)pData, (int)iRecvLen);
+		delete[]pData;
 	}
 }
 
