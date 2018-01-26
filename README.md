@@ -26,6 +26,12 @@ I did not use struct, because change a value of a struct in blueprint is not con
 
 ★ 5. Linux
 
+★ 6. UWP
+
+★ 7. Win32
+
+★ 8. HTML5(NEW!!)
+
 this plugin tested on 4.16, 4.17 and 4.18.
 
 # Install
