@@ -108,6 +108,21 @@ public class WebSocket : ModuleRules
                 PublicAdditionalLibraries.Add(Lib);
             }
         }
+        else if(Target.Platform == UnrealTargetPlatform.HTML5)
+        {
+            Definitions.Add("PLATFORM_UWP=0");
+            string strStaticPath = Path.GetFullPath(Path.Combine(ModulePath, "ThirdParty/lib/HTML5/"));
+            PublicLibraryPaths.Add(strStaticPath);
+
+            string[] StaticLibrariesHTML5 = new string[] {
+                "WebSocket.js",
+            };
+
+            foreach (string Lib in StaticLibrariesHTML5)
+            {
+                PublicAdditionalLibraries.Add(strStaticPath + Lib);
+            }
+        }
         else if(Target.Platform == UnrealTargetPlatform.Mac)
         {
             Definitions.Add("PLATFORM_UWP=0");
