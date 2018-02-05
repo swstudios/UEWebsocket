@@ -8,7 +8,7 @@ function CreateWebSocketServer(host, port)
     server.on('connection', function connection(client, req) {
     client.on('message', function incoming(message) {
          //cb.OnRequest(client, message);
-         client.send(message, null, (error)=>{
+         client.send("rsp:" + new Date(), null, (error)=>{
              console.log("send error:" + error)
          })
     });

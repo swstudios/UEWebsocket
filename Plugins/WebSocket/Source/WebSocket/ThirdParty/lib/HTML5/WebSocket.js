@@ -15,6 +15,7 @@ SocketCreate: function(url)
 
 	socket.socket.onmessage = function (e) {
 		// Todo: handle other data types?
+		console.log("recved message!!:" + typeof(e.data) + " :" + e.data);
 		if (e.data instanceof Blob)
 		{
 			var reader = new FileReader();
@@ -27,6 +28,11 @@ SocketCreate: function(url)
 		else if (e.data instanceof ArrayBuffer)
 		{
 			var array = new Uint8Array(e.data);
+			socket.messages.push(array);
+		}
+		else if(typeof(e.data) == "string")
+		{
+			var array = new TextEncoder("utf-8").encode(e.data);
 			socket.messages.push(array);
 		}
 	};
@@ -93,13 +99,18 @@ SocketSend: function (socketInstance, ptr, length)
 SocketRecvLength: function(socketInstance)
 {
 	var socket = webSocketInstances[socketInstance];
+	console.log("messagelen:" + socket.messages.length);
 	if (socket.messages.length == 0)
 		return 0;
+	
+	console.log("message datalen:" + socket.messages[0].length);
+	
 	return socket.messages[0].length;
 },
 
 SocketRecv: function (socketInstance, ptr, length)
 {
+	console.log("call recv data:" + length);
 	var socket = webSocketInstances[socketInstance];
 	if (socket.messages.length == 0)
 		return 0;
