@@ -1,12 +1,10 @@
 # UEWebsocket
-unreal engine 4 websocket plugin(support ssl) for both c++ and blueprint developer.
+UEWebsocket is a WebSocket plugin with SSL support for both C++ and Blueprint developers.
 
-This plugin is for unreal engine 4 c++ and blueprint developers, you can easily use c++ or blueprint
- to connect to remote server and send receive messages.
+This plugin is for Unreal Engine 4 for C++ and Blueprint development; using either method you can connect to a remote server via a remote WebSocket server to send and receive messages.
  
-Unreal network is great for FPS or moba and IO games, but there's some games, you need to process network by yourself,
-this plugin is for these people, you don't need to write any c++ code, 
-the plugin support blueprint api to make json string from message object, and can also decode json to message object.
+Unreal's native network is great for FPS or mobile games, but there's some games, you need to process network by yourself,
+this plugin is for these people, you don't need to write any c++ code, the plugin support blueprint api to make json string from message object, and can also decode json to message object.
 
 Even the io game, we still need to connect to non dedicated server, I first write this plugin for my poker game, and then 
 I use this plugin in a simple .io shoot game, here is the demo webgl version:[tankfire.io](http://50.116.0.118), you can open it with firefox(I use the latest firefox for test), please confirem your browser support webgl.
